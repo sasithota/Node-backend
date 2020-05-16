@@ -28,5 +28,9 @@ app.use('/api/login',Login);
 app.use('/api/register',Register);
 app.use('/api/posts',Posts);
 
+app.get('/',(req,res)=>{
+	res.end("welcom to node-auth");
+})
 // run app on port 5000;
-app.listen(5000,()=>console.log("server started at localhost:5000"));       
+const Port = process.env.PORT || 5000;
+app.listen(Port,()=>console.log(`server started at ${Port}`));       
