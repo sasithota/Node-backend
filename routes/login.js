@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/Users.js');
 const {Validator} = require('../authentication/formValidation.js');
 
-// initial express router
+// express router
 const router = express.Router();
 
 // available routes
