@@ -29,7 +29,7 @@ app.use('/api/register',Register);
 app.use('/api/posts',Posts);
 
 app.get('/',(req,res)=>{
-	res.end("welcom to node-auth");
+	res.end("welcom to node-auth,Ram Sankar");
 })
 // run app on port 5000;
 const Port = process.env.PORT || 5000;
