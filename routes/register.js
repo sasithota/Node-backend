@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 // local imports
 const User = require('../models/Users.js');
-const {Validator} = require('../authentication/formValidation.js');
+const {loginValidator} = require('../authentication/formValidation.js');
 
 // Initialize Router
 const router = express.Router();
@@ -13,7 +13,7 @@ const router = express.Router();
 router.route('/')
 .post(async(req,res,next)=>{
 	// validating incoming data
-	const {error} = Validator(req.body);
+	const {error} = loginValidator(req.body);
 	if(error) return res.status(400).send({user:null,error:error.details[0].message});
 	// encypting password
 	const salt = await bcrypt.genSalt(10);
