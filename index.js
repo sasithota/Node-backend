@@ -17,6 +17,7 @@ dotenv.config();
 // middlewares
 app.use(express.json());
 app.use(cors());
+app.use(express.static(__dirname+'/public'));
 
 
 // connect mongodb with mongoose
@@ -30,7 +31,7 @@ app.use('/api/register',Register);
 app.use('/api/posts',jwtValidator,Posts); //jwValidator is authentication middleware
 
 app.get('/',(req,res)=>{
-	res.end("welcom to node-auth,user management system");
+	res.sendFile('index.html');
 })
 // run app on port 5000;
 const Port = process.env.PORT || 5000;

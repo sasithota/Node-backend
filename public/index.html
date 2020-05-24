@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Node-authentication</title>
+	<style>
+		body{
+			flex: 1;
+			width: 100%;
+		}
+		header{
+			margin: auto;
+			width: 50%;
+			text-align: center;
+		}
+		.routes-container{
+			display: flex;
+			width: 90%;
+			flex-wrap: wrap;
+			margin: auto;
+
+		}
+		.route{
+			margin: 2%;
+			text-align: center;
+			width: 42%;
+		}
+		.route-c{
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+		}
+		label{
+			color: green;
+			font-size: 20px;
+			flex: 1;
+		}
+		h4,p{
+			text-align: center;
+			flex: 2;
+		}
+		.c1{
+			background-color: skyblue;
+		}
+		.c2{
+			background-color: lightcoral;
+		}
+	</style>
+</head>
+<body>
+	<header>
+    <h1 id="header">User Management system</h1>
+    <h3>Available routes</h3>
+    </header>
+    <div class="routes-container">
+       <div class="route c1">
+       	<div class="route-c">
+       		<label class="label">Route</label>
+         	<h4 class="route-req">/api/register</h4>    
+       	</div>
+       	<div class="route-c">
+       		<label class="label">Method</label>
+       	    <p class="route-m">PUT</p>
+        </div>
+        <div class="route-c">
+        	<label class="label">details</label>
+         	<p class="route-d">user can create account by inserting username and password in request body</p>
+       </div>
+       <div class="route-c">
+       	    <label class="label">response</label>
+       	    <p class="route-res">expect msg containing username and error</p>
+       </div>
+       </div>
+    <div class="route c2">
+       	<div class="route-c">
+       		<label class="label">Route</label>
+         	<h4 class="route-req">/api/login</h4>    
+       	</div>
+       	<div class="route-c">
+       		<label class="label">Method</label>
+       	    <p class="route-m">POST</p>
+        </div>
+        <div class="route-c">
+        	<label class="label">details</label>
+         	<p class="route-d">user can login to his/her account by inserting username and password in request body</p>
+       </div>
+       <div class="route-c">
+       	    <label class="label">response</label>
+       	    <p class="route-res">expect msg containing username and authentication token and error</p>
+       </div>
+       </div>
+    <div class="route c1">
+       	<div class="route-c">
+       		<label class="label">Route</label>
+         	<h4 class="route-req">/api/posts</h4>    
+       	</div>
+       	<div class="route-c">
+       		<label class="label">Method</label>
+       	    <p class="route-m">PUT</p>
+        </div>
+        <div class="route-c">
+        	<label class="label">details</label>
+         	<p class="route-d">user can create his/her posts by inserting autentication token in request header and post's title and content in requrest body</p>
+       </div>
+       <div class="route-c">
+       	    <label class="label">response</label>
+       	    <p class="route-res">expect msg containing postand error</p>
+       </div>
+       </div>
+    <div class="route c2">
+       	<div class="route-c">
+       		<label class="label">Route</label>
+         	<h4 class="route-req">/api/posts</h4>    
+       	</div>
+       	<div class="route-c">
+       		<label class="label">Method</label>
+       	    <p class="route-m">GET</p>
+        </div>
+        <div class="route-c">
+        	<label class="label">details</label>
+         	<p class="route-d">user can view his/her posts by inserting authentication in request header</p>
+       </div>
+       <div class="route-c">
+       	    <label class="label">response</label>
+       	    <p class="route-res">expect msg containing username and error</p>
+       </div>
+       </div>
+    <div class="route c1">
+       	<div class="route-c">
+       		<label class="label">Route</label>
+         	<h4 class="route-req">/api/posts/:postid</h4>    
+       	</div>
+       	<div class="route-c">
+       		<label class="label">Method</label>
+       	    <p class="route-m">POST</p>
+        </div>
+        <div class="route-c">
+        	<label class="label">details</label>
+         	<p class="route-d">user can update a post by inserting post's title and content in request body and authentication token in requrest header</p>
+       </div>
+       <div class="route-c">
+       	    <label class="label">response</label>
+       	    <p class="route-res">expect msg containing username and error</p>
+       </div>
+       </div>
+    <div class="route c2">
+       	<div class="route-c">
+       		<label class="label">Route</label>
+         	<h4 class="route-req">/api/posts/:postid</h4>    
+       	</div>
+       	<div class="route-c">
+       		<label class="label">Method</label>
+       	    <p class="route-m">POST</p>
+        </div>
+        <div class="route-c">
+        	<label class="label">details</label>
+         	<p class="route-d">user can update a post by inserting post's title and content in request body and authentication token in requrest header</p>
+       </div>
+       <div class="route-c">
+       	    <label class="label">response</label>
+       	    <p class="route-res">expect msg containing username and error</p>
+       </div>
+       </div>
+    </div>
+
+</body>
+</html>
