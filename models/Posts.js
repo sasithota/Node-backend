@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 // const User = require('./Users.js');
 // new Schema
 
-const Post = new mongoose.Schema({
+const post = new mongoose.Schema({
 	title:{
 		type : String,
 		required : true,
@@ -24,6 +24,8 @@ const Post = new mongoose.Schema({
 	}
 });
 
-const Posts = mongoose.model('posts',Post);
+// schema to db
+const Post = mongoose.model('posts',post);
 
-module.exports = Posts;
+// export module
+module.exports = Post;

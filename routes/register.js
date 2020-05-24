@@ -14,7 +14,7 @@ router.route('/')
 .post(async(req,res,next)=>{
 	// validating incoming data
 	const {error} = loginValidator(req.body);
-	if(error) return res.status(400).send({user:null,error:error.details[0].message});
+	if(error) return res.status(400).send({msg:null,error:error.details[0].message});
 	// encypting password
 	const salt = await bcrypt.genSalt(10);
 	const hashedPass = await bcrypt.hash(req.body.password,salt);
@@ -27,11 +27,11 @@ router.route('/')
 	try{
 		const createdUser = await user.save();
 		if(!createdUser)
-			return res.status(400).send({user:null,error:"problem connecting to db"});
-		return res.status(200).send({user:createdUser.username,error:null});
+			return res.status(400).send({msg:null,error:"problem connecting to db"});
+		return res.status(200).send({msg:createdUser.username,error:null});
 	}catch(e){
 		// if error connecting to db or user already exist
-		res.status(400).send({user:null,error:"username already exist"});
+		res.status(400).send({msg:null,error:"username already exist"});
 	}
 })
 

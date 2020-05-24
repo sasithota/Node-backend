@@ -11,6 +11,10 @@ var user = new mongoose.Schema({
 	password : {
 		type : String,
 		required : true
+	},
+	createdOn : {
+		type : Date,
+		default : Date.now
 	}
 });
 
