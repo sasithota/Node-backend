@@ -30,7 +30,7 @@ app.use('/api/register',Register);
 app.use('/api/posts',jwtValidator,Posts); //jwValidator is authentication middleware
 
 app.get('/',(req,res)=>{
-	res.end("welcom to node-auth,Ram Sankar");
+	res.end("welcom to node-auth,user management system");
 })
 // run app on port 5000;
 const Port = process.env.PORT || 5000;
