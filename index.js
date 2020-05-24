@@ -8,6 +8,7 @@ const dotenv = require('dotenv');
 const Login = require('./routes/login.js');
 const Register = require('./routes/register.js');
 const Posts = require('./routes/posts.js');
+const {jwtValidator} = require('./authentication/jwtMiddleware.js');
 
 // Initialize express app
 var app = express();
@@ -26,7 +27,7 @@ mongoose.connect(process.env.DB_CONNECT,
 // use Router Middlewares
 app.use('/api/login',Login);
 app.use('/api/register',Register);
-app.use('/api/posts',Posts);
+app.use('/api/posts',jwtValidator,Posts); //jwValidator is authentication middleware
 
 app.get('/',(req,res)=>{
 	res.end("welcom to node-auth,Ram Sankar");

@@ -2,7 +2,6 @@
 const express = require('express');
 
 // local imports
-const {jwtValidator} = require('../authentication/jwtMiddleware.js');
 const {postValidator} = require('../authentication/formValidation.js');
 const comments = require('./comments.js');
 const User = require('../models/Users.js');
@@ -21,13 +20,12 @@ router.use('/:pid/comments',commentsMiddleware,comments);
 
 // available routes
 // get all posts of a user
-router.get('/',jwtValidator,async(req,res,next)=>{
+router.get('/',async(req,res,next)=>{
        const u_id = req.user_id;
        // fetch user data from db
        try{
        	 const posts = await Post.find({author:u_id});
          // posts is an array of objects
-         if(posts.length==0) return res.status(200).send({msg:'No posts found',error:null});
          return res.status(200).send({msg:posts,error:null});
        }catch(e){
          // error connecting to db
@@ -35,7 +33,7 @@ router.get('/',jwtValidator,async(req,res,next)=>{
        }
 })
 // create a new post with author as user
-router.put('/',jwtValidator,async(req,res,next)=>{
+router.put('/',async(req,res,next)=>{
       // retrieving data from req 
       const u_id = req.user_id;
       const {title,content} = req.body;
@@ -58,48 +56,48 @@ router.put('/',jwtValidator,async(req,res,next)=>{
       }
 })
 // details of a post 
-router.get('/:pid',jwtValidator,async(req,res,next)=>{
+router.get('/:pid',async(req,res,next)=>{
       // post id from req parameters
       const p_id = req.params.pid;
       // fetch post from db
       try{
          const posts = await Post.findOne({_id:p_id});
-         if(posts.length==0) return res.send({msg:null,error:"could not fetch post"});
+         if(!posts) return res.status(400).send({msg:null,error:"post not found"});
          const {title,content} = await posts;
-         return res.send({msg:{title,content},error:null});
+         return res.status(200).send({msg:{title,content},error:null});
       }catch(e){
-        res.send({msg:null,error:'could not connect to db'});
+        res.status(400).send({msg:null,error:'could not connect to db'});
       }
 })
 // if current user and author of the post are same
 // to update a post
-router.post('/:pid',jwtValidator,async(req,res,next)=>{
+router.post('/:pid',async(req,res,next)=>{
       // validating incoming data from request
       const {error} = postValidator(req.body);
-      if(error) return res.send({error:error.details[0].message});
+      if(error) return res.status(400).send({error:error.details[0].message});
       const post = {
         title : req.body.title,
         content : req.body.content,
       };
       // updating the post in db
       try{
-        const updatedPost = await Post.findByIdAndUpdate(req.params.pid,{$set:post});
+        const updatedPost = await Post.update({_id:req.params.pid},{$set:post});
         console.log(updatedPost);
-        if(!updatedPost) return res.send({msg:null,error:"could not update"});
-        res.send({msg:'post updated successfully',error:null});
+        if(!updatedPost) return res.status(400).send({msg:null,error:"could not update"});
+        res.status(200).send({msg:'post updated successfully',error:null});
       }catch(e){
-        res.send({msg:null,error:'could not connect to db'});
+        res.status(400).send({msg:null,error:'could not connect to db'});
       }
 })
 
-router.delete('/:pid',jwtValidator,async(req,res,next)=>{
+router.delete('/:pid',async(req,res,next)=>{
     const p_id = req.params.pid;
     try{
         const deletedPost = await Post.deleteOne({_id : p_id});
-        if(!deletedPost) return res.send({msg:null,error:"could not delete the post"});
-        res.send({msg:'post deleted successfully',error:null});
+        if(!deletedPost) return res.status(400).send({msg:null,error:"could not delete the post"});
+        res.status(200).send({msg:'post deleted successfully',error:null});
     }catch(e){
-      res.send({msg:null,error:"could not connect to server"});
+      res.stauts(400).send({msg:null,error:"could not connect to server"});
     }
 })
 

@@ -11,7 +11,7 @@ const router = express.Router();
 
 // available routes
 router.route('/')
-.post(async(req,res,next)=>{
+.put(async(req,res,next)=>{
 	// validating incoming data
 	const {error} = loginValidator(req.body);
 	if(error) return res.status(400).send({msg:null,error:error.details[0].message});
