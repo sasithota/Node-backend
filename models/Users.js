@@ -12,6 +12,14 @@ var user = new mongoose.Schema({
 		type : String,
 		required : true
 	},
+	followers : {
+		type : Array,
+		default : []
+	},
+	following : {
+		type : Array,
+		default : []
+	},
 	createdOn : {
 		type : Date,
 		default : Date.now

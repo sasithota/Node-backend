@@ -24,11 +24,12 @@ router.get('/',async(req,res,next)=>{
        const u_id = req.user_id;
        // fetch user data from db
        try{
-       	 const posts = await Post.find({author:u_id});
+       	 const posts = await Post.find({author:u_id}).sort({createdOn:-1});
          // posts is an array of objects
          return res.status(200).send({msg:posts,error:null});
        }catch(e){
          // error connecting to db
+         console.log(e);
          res.status(400).send({msg:null,error:'could not connect to db'});
        }
 })
@@ -39,7 +40,7 @@ router.put('/',async(req,res,next)=>{
       const {title,content} = req.body;
       // validate incoming data
       const {error} = postValidator({title,content});
-      if(error) return res.status(400).send({msg:null,error:error.details[0].message});
+      if(error) return res.status(200).send({msg:null,error:error.details[0].message});
       // creating post object
       const post = new Post({
         title : title,
@@ -49,7 +50,7 @@ router.put('/',async(req,res,next)=>{
       try{
          // saving post to db
          const savedPost = await post.save();
-         if(!savedPost) res.status(400).send({msg:null,error:"error while uploading post"});
+         if(!savedPost) res.status(200).send({msg:null,error:"error while uploading post"});
          return res.status(200).send({msg:"post created successfully",error:null});
       }catch(e){
         res.status(400).send({msg:null,error:'could not connect to db'});
