@@ -9,6 +9,7 @@ const Login = require('./routes/login.js');
 const Register = require('./routes/register.js');
 const Posts = require('./routes/posts.js');
 const users = require('./routes/users.js');
+const images = require('./routes/images.js');
 const {jwtValidator} = require('./authentication/jwtMiddleware.js');
 
 // Initialize express app
@@ -31,6 +32,7 @@ app.use('/api/login',Login);
 app.use('/api/register',Register);
 app.use('/api/posts',jwtValidator,Posts); //jwValidator is authentication middleware
 app.use('/api/users',jwtValidator,users);
+app.use('/api/images',jwtValidator,images);
 
 app.get('/',(req,res)=>{
 	res.sendFile('index.html');

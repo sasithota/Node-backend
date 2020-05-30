@@ -6,8 +6,8 @@ const User = require('../models/Users.js');
 
 // routes
 // details of current user
-router.get('/',async(req,res,next)=>{
-     const u_id = req.user_id;
+router.post('/',async(req,res,next)=>{
+     const u_id = req.body.uid;
      console.log(u_id);
      // db query
      try{
@@ -15,7 +15,8 @@ router.get('/',async(req,res,next)=>{
         if(!user) return res.send({msg:null,error:'user not found'});
         return res.send({msg:user,error:null});
      }catch(e){
-     	res.status(400).send('could not connect to db');
+        console.log('error connecting');
+     	res.status(200).send('could not connect to db');
      }
 });
 router.post('/find',async(req,res,next)=>{

@@ -2,8 +2,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
-const upload = multer({dest: 'uploads/'});
-
 // local imports
 const User = require('../models/Users.js');
 const {loginValidator} = require('../authentication/formValidation.js');
@@ -35,10 +33,6 @@ router.put('/',async(req,res,next)=>{
 		res.status(400).send({msg:null,error:"username already exist"});
 	}
 });
-router.post('/profile',upload.single('avatar'),(req,res)=>{
-	console.log(req.file);
-	res.send("file uploded");
-})
 
 // Export module
 module.exports = router;

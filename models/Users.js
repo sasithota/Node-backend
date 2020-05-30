@@ -20,6 +20,10 @@ var user = new mongoose.Schema({
 		type : Array,
 		default : []
 	},
+	profilePic : {
+		type : String,
+		default : "default.png"
+	},
 	createdOn : {
 		type : Date,
 		default : Date.now
