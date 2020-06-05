@@ -1,105 +1,92 @@
 // import modules
-const express = require('express');
+const router = require('express').Router();
 
 // local imports
-const {postValidator} = require('../authentication/formValidation.js');
 const comments = require('./comments.js');
-const User = require('../models/Users.js');
-const Post = require('../models/Posts.js');
-// popultaing postid in req for comments
-// could not able to retrieve req.params inside comments router so created
-// middleware to populate params in request
-const commentsMiddleware = (req,res,next)=>{
-     const p_id = req.params.pid;
-     req.pid = p_id;
-     next();
-}
-// express router
-const router = express.Router();
+const {fetchPostsRelated,
+       pushAPost,
+       fetchAPost,
+       updateAPost,
+       deleteAPost
+       } = require('../src/functions/index.js');
+// comments route
+// comments route is post specific
 router.use('/:pid/comments',commentsMiddleware,comments);
 
 // available routes
 // get all posts of a user
 router.get('/',async(req,res,next)=>{
-       const u_id = req.user_id;
-       // fetch user data from db
-       try{
-       	 const posts = await Post.find({author:u_id}).sort({createdOn:-1});
-         // posts is an array of objects
-         return res.status(200).send({msg:posts,error:null});
-       }catch(e){
-         // error connecting to db
-         console.log(e);
-         res.status(400).send({msg:null,error:'could not connect to db'});
-       }
+      const id = req.user_id;
+      // using functioins getPostsRelated(userid);
+      try{
+        const posts = await fetchPostsRelated(id);
+        return res.status(200).send({error:null,msg:posts});
+      }catch(e){
+        return res.status(200).send({error:e,msg:null});
+      }
+       
 })
+
 // create a new post with author as user
 router.put('/',async(req,res,next)=>{
       // retrieving data from req 
-      const u_id = req.user_id;
+      const id = req.user_id;
+      const name = req.user_name;
       const {title,content} = req.body;
-      // validate incoming data
-      const {error} = postValidator({title,content});
-      if(error) return res.status(200).send({msg:null,error:error.details[0].message});
-      // creating post object
-      const post = new Post({
-        title : title,
-        content : content,
-        author : u_id,
-      });
+      // using function pushAPost(userid,username,{title,content});
       try{
-         // saving post to db
-         const savedPost = await post.save();
-         if(!savedPost) res.status(200).send({msg:null,error:"error while uploading post"});
-         return res.status(200).send({msg:"post created successfully",error:null});
+         const post = await pushAPost(id,name,{title,content});
+         return res.status(200).send({error:null,msg:post});
       }catch(e){
-        res.status(400).send({msg:null,error:'could not connect to db'});
+        return res.status(200).send({error:e,msg:null});
       }
+      
 })
 // details of a post 
 router.get('/:pid',async(req,res,next)=>{
       // post id from req parameters
       const p_id = req.params.pid;
-      // fetch post from db
+      // using functions fetchAPost(postid);
       try{
-         const posts = await Post.findOne({_id:p_id});
-         if(!posts) return res.status(400).send({msg:null,error:"post not found"});
-         const {title,content} = await posts;
-         return res.status(200).send({msg:{title,content},error:null});
+         const getPost = await fetchAPost(p_id);
+         return res.status(200).send({error:null,msg:getPost});
       }catch(e){
-        res.status(400).send({msg:null,error:'could not connect to db'});
+        res.status(200).send({error:e,msg:null});
       }
 })
 // if current user and author of the post are same
 // to update a post
 router.post('/:pid',async(req,res,next)=>{
-      // validating incoming data from request
-      const {error} = postValidator(req.body);
-      if(error) return res.status(400).send({error:error.details[0].message});
-      const post = {
-        title : req.body.title,
-        content : req.body.content,
-      };
-      // updating the post in db
+      const pid = req.params.pid;
+      const {title,content} = req.body;
+      // using functions updateAPost(postid,{title,content});
       try{
-        const updatedPost = await Post.update({_id:req.params.pid},{$set:post});
-        console.log(updatedPost);
-        if(!updatedPost) return res.status(400).send({msg:null,error:"could not update"});
-        res.status(200).send({msg:'post updated successfully',error:null});
+         const updatedPost = await updateAPost(pid,{title,content});
+         return res.status(200).send({error:null,msg:updatedPost});
       }catch(e){
-        res.status(400).send({msg:null,error:'could not connect to db'});
+        res.status(200).send({error:e,msg:null});
       }
 })
 
 router.delete('/:pid',async(req,res,next)=>{
     const p_id = req.params.pid;
+    // using functions deleteAPost
     try{
-        const deletedPost = await Post.deleteOne({_id : p_id});
-        if(!deletedPost) return res.status(400).send({msg:null,error:"could not delete the post"});
-        res.status(200).send({msg:'post deleted successfully',error:null});
+     const deletedPost = await deleteAPost(p_id);
+     return res.status(200).send({error:null,msg:deletedPost});
     }catch(e){
-      res.stauts(400).send({msg:null,error:"could not connect to server"});
+      res.status(200).send({error:e,msg:null});
     }
 })
+
+// <----MIDDLEWARE----->
+// popultaing postid in req for comments
+// could not able to retrieve req.params inside comments router so created
+// middleware to populate params in request
+function commentsMiddleware(req,res,next){
+     const p_id = req.params.pid;
+     req.pid = p_id;
+     next();
+}
 
 module.exports = router;

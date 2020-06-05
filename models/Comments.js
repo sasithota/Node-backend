@@ -15,8 +15,12 @@ const comment = new mongoose.Schema({
 		required : true
 	},
 	author : {
-		type : mongoose.ObjectId,
-		required : true
+		authorName : {
+			type :String
+		},
+		authorId : {
+			type : mongoose.ObjectId
+		}
 	},
 	createdOn : {
 		type : Date,

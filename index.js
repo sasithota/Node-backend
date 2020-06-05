@@ -31,12 +31,14 @@ mongoose.connect(process.env.DB_CONNECT,
 app.use('/api/login',Login);
 app.use('/api/register',Register);
 app.use('/api/posts',jwtValidator,Posts); //jwValidator is authentication middleware
-app.use('/api/users',jwtValidator,users);
-app.use('/api/images',jwtValidator,images);
+app.use('/api/users',jwtValidator,users); //jwValidator is authentication middleware
+app.use('/api/images',jwtValidator,images); //jwValidator is authentication middleware
 
+// availble router
 app.get('/',(req,res)=>{
 	res.sendFile('index.html');
 })
+
 // run app on port 5000;
 const Port = process.env.PORT || 5000;
 app.listen(Port,()=>console.log(`server started at ${Port}`));       
