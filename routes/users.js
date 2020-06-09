@@ -8,6 +8,7 @@ const {
     getUserWithoutPosts,
     Follow,
     Unfollow,
+    getUserIdByUsername,
 } = require("../src/functions/index.js");
 // routes
 router.get("/simple/:user_id", async (req, res, next) => {
@@ -63,4 +64,13 @@ router.get("/Unfollow/:user_id", async (req, res, next) => {
     }
 });
 
+router.get("/userid/:username", async (req, res, next) => {
+    const username = req.params.username;
+    try {
+        const id = await getUserIdByUsername(username);
+        return res.status(200).send({ error: null, msg: id });
+    } catch (e) {
+        return res.status(200).send({ error: e, msg: null });
+    }
+});
 module.exports = router;

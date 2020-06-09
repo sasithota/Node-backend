@@ -352,6 +352,19 @@ const Unfollow = (followerId, followingId) => {
 	});
 };
 
+// get userid by username
+const getUserIdByUsername = (username) => {
+	return new Promise(async (resolve, reject) => {
+		try {
+			const user = await User.findOne({ username });
+			if (!user) return reject("user not found");
+			return resolve(user._id);
+		} catch (e) {
+			if (e) return reject(e);
+			return reject("Could not connect to db");
+		}
+	});
+};
 module.exports = {
 	Register,
 	Login,
@@ -370,4 +383,5 @@ module.exports = {
 	getUserWithoutPosts,
 	Follow,
 	Unfollow,
+	getUserIdByUsername,
 };
