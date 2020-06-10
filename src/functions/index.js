@@ -272,8 +272,8 @@ const fetchAUser = (id) => {
 			const { Following, Followers } = await getFollowingAndFollowers(id);
 			const user = await User.findOne({ _id: id });
 			const userdetails = {
-				proficPic: user.proficPic,
 				username: user.username,
+				profilePic: user.profilePic,
 				posts: posts,
 				Following: Following,
 				Followers: Followers,
