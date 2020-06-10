@@ -372,6 +372,22 @@ const getUserIdByUsername = (username) => {
 		}
 	});
 };
+
+const uploadProfilePic = (file, userid) => {
+	return new Promise(async (resolve, reject) => {
+		try {
+			const updatedProfile = await User.update(
+				{ _id: userid },
+				{ $set: { profilePic: file.location } }
+			);
+			if (!updatedProfile) return reject("could not update profilepic");
+			return resolve("pic updated successfully");
+		} catch (e) {
+			if (e) return reject(e);
+			return reject("could not find user");
+		}
+	});
+};
 module.exports = {
 	Register,
 	Login,
@@ -391,4 +407,5 @@ module.exports = {
 	Follow,
 	Unfollow,
 	getUserIdByUsername,
+	uploadProfilePic,
 };

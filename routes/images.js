@@ -1,35 +1,18 @@
 const express = require("express");
-const fs = require("fs");
-const multer = require("multer");
-const path = require("path");
+const aws_upload = require("../src/functions/uploadImagesAWS.js");
 
 // local imports
-const User = require("../models/Users.js");
-const storage = multer.diskStorage({
-	destination: "public/uploads/",
-	filename: function (req, file, cb) {
-		cb(null, Date.now() + file.fieldname + path.extname(file.originalname));
-	},
-});
-const upload = multer({
-	storage: storage,
-});
-
+const { uploadProfilePic } = require("../src/functions/index.js");
 const router = express.Router();
 
-router.post("/", upload.single("avatar"), async (req, res) => {
+router.post("/", aws_upload.single("avatar"), async (req, res) => {
 	const u_id = req.user_id;
 	if (!req.file) return res.send({ error: "no image uploaded", msg: null });
 	try {
-		const user = await User.update(
-			{ _id: u_id },
-			{ $set: { profilePic: req.file.filename } }
-		);
-		if (!user)
-			return res.send({ msg: null, error: "error uploading to db" });
-		res.send({ msg: "profilepic uploaded", error: null });
-	} catch {
-		res.status(400).send({ msg: null, error: "error connecting to db" });
+		const updatedProfile = await uploadProfilePic(req.file, u_id);
+		return res.status(200).send({ error: null, msg: updatedProfile });
+	} catch (e) {
+		return res.status(200).send({ error: e, msg: null });
 	}
 });
 
