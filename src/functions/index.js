@@ -117,12 +117,19 @@ const pushAPost = (id, name, body) => {
 		// form data in body
 		const { error } = postValidator(body);
 		if (error) return reject(error.details[0].message);
+		try {
+			const user = await User.findOne({ _id: id });
+			var pic = user.profilePic;
+		} catch (e) {
+			return reject(e);
+		}
 		const post = new Post({
 			title: body.title,
 			content: body.content,
 			author: {
 				authorName: name,
 				authorId: id,
+				authorPic: pic,
 			},
 		});
 		// inserting into database
