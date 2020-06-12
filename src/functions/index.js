@@ -440,6 +440,17 @@ const unlikeAPost = (postid, userid) => {
 	});
 };
 
+const likesCount = (postid) => {
+	return new Promise(async (resolve, reject) => {
+		try {
+			const count = await Post.findOne({ _id: postid });
+			return resolve(count.likesCount);
+		} catch (e) {
+			return reject("network error");
+		}
+	});
+};
+
 module.exports = {
 	Register,
 	Login,
@@ -462,4 +473,5 @@ module.exports = {
 	uploadProfilePic,
 	likeAPost,
 	unlikeAPost,
+	likesCount,
 };

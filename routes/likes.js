@@ -2,9 +2,22 @@
 const router = require("express").Router();
 
 // local imports
-const { likeAPost, unlikeAPost } = require("../src/functions/index.js");
+const {
+	likeAPost,
+	unlikeAPost,
+	likesCount,
+} = require("../src/functions/index.js");
 
 // routes
+router.get("/", async (req, res, next) => {
+	const p_id = req.pid;
+	try {
+		const count = await likesCount(p_id);
+		return res.status(200).send({ error: null, msg: count });
+	} catch (e) {
+		return res.status(200).send({ error: e, msg: null });
+	}
+});
 router.get("/like", async (req, res, next) => {
 	const u_id = req.user_id;
 	const p_id = req.pid;
