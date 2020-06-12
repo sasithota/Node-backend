@@ -1,6 +1,7 @@
 // external dependencies
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 // import Database Models
 const User = require("../../models/Users.js");
 const Post = require("../../models/Posts.js");
@@ -180,6 +181,10 @@ const deleteAPost = (id) => {
 		try {
 			const deletedPost = await Post.deleteOne({ _id: id });
 			if (!deletedPost) return reject("could not delete the post");
+			const deleteCommentsRelated = await Comment.deleteMany(
+				{},
+				{ postid: id }
+			);
 			return resolve("post deleted successfully");
 		} catch (e) {
 			return reject("could not connect to db");
@@ -215,6 +220,13 @@ const pushAComment = (userid, username, postid, content) => {
 		try {
 			const createdComment = await comment.save();
 			if (!createdComment) return reject("could not create the comment");
+			const pushToPost = await Post.update(
+				{ _id: postid },
+				{
+					$inc: { commentsCount: 1 },
+					$push: { comments: createdComment._id },
+				}
+			);
 			return resolve("comment created successfully");
 		} catch {
 			return reject("could not connect to db");
@@ -249,14 +261,25 @@ const updateAComment = (id, content) => {
 		}
 	});
 };
-// delete a comment by its id arguments->commentid
-const deleteAComment = (id) => {
+// delete a comment by its id arguments->commentid,postid
+const deleteAComment = (commentId, postId) => {
 	return new Promise(async (resolve, reject) => {
 		try {
-			const deletedComment = await Comment.deleteOne({ _id: id });
+			const deletedComment = await Comment.deleteOne({ _id: commentId });
 			if (!deletedComment) return reject("could not delete the comment");
+			const id = mongoose.Types.ObjectId(commentId);
+			const popFromPost = await Post.updateOne(
+				{ _id: postId },
+				{
+					$inc: { commentsCount: -1 },
+					$pull: { comments: id },
+				}
+			);
+			console.log(popFromPost);
+			if (!popFromPost) return reject("could not delete the comment");
 			return resolve("comment deleted successfully");
-		} catch {
+		} catch (e) {
+			if (e) return reject(e);
 			return reject("could not connet to db");
 		}
 	});
@@ -388,6 +411,35 @@ const uploadProfilePic = (file, userid) => {
 		}
 	});
 };
+//<--------------------------------------------------Like SECTION------------------------------------------------------->
+const likeAPost = (postid, userid) => {
+	return new Promise(async (resolve, reject) => {
+		try {
+			const updatedPost = await Post.updateOne(
+				{ _id: postid },
+				{ $push: { likes: userid }, $inc: { likesCount: 1 } }
+			);
+			return resolve("postLiked");
+		} catch (e) {
+			return reject("could not connect to db");
+		}
+	});
+};
+
+const unlikeAPost = (postid, userid) => {
+	return new Promise(async (resolve, reject) => {
+		try {
+			const updatedPost = await Post.updateOne(
+				{ _id: postid },
+				{ $pull: { likes: userid }, $inc: { likesCount: -1 } }
+			);
+			return resolve("postdisLiked");
+		} catch (e) {
+			return reject("could not connect to db");
+		}
+	});
+};
+
 module.exports = {
 	Register,
 	Login,
@@ -408,4 +460,6 @@ module.exports = {
 	Unfollow,
 	getUserIdByUsername,
 	uploadProfilePic,
+	likeAPost,
+	unlikeAPost,
 };

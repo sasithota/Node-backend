@@ -59,8 +59,11 @@ router.post("/:cid", async (req, res, next) => {
 
 router.delete("/:cid", async (req, res, next) => {
 	const c_id = req.params.cid;
+	const p_id = req.pid;
+	console.log(p_id);
+	console.log(c_id);
 	try {
-		const deletedComment = await deleteAComment(c_id);
+		const deletedComment = await deleteAComment(c_id, p_id);
 		return res.status(200).send({ error: null, msg: deletedComment });
 	} catch (e) {
 		return res.status(200).send({ error: e, msg: null });

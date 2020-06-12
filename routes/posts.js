@@ -3,6 +3,7 @@ const router = require("express").Router();
 
 // local imports
 const comments = require("./comments.js");
+const likes = require("./likes.js");
 const {
   fetchPostsRelated,
   pushAPost,
@@ -12,8 +13,8 @@ const {
 } = require("../src/functions/index.js");
 // comments route
 // comments route is post specific
-router.use("/:pid/comments", commentsMiddleware, comments);
-
+router.use("/:pid/comments", postIdMiddleware, comments);
+router.use("/:pid/likes", postIdMiddleware, likes);
 // available routes
 // get all posts of a user
 router.get("/", async (req, res, next) => {
@@ -82,7 +83,7 @@ router.delete("/:pid", async (req, res, next) => {
 // popultaing postid in req for comments
 // could not able to retrieve req.params inside comments router so created
 // middleware to populate params in request
-function commentsMiddleware(req, res, next) {
+function postIdMiddleware(req, res, next) {
   const p_id = req.params.pid;
   req.pid = p_id;
   next();
