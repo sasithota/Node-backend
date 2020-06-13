@@ -37,9 +37,6 @@ const post = new mongoose.Schema({
 		authorId: {
 			type: mongoose.ObjectId,
 		},
-		authorPic: {
-			type: String,
-		},
 	},
 	createdOn: {
 		type: Date,

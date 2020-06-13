@@ -87,7 +87,12 @@ const Login = (body) => {
 const fetchPosts = (id) => {
 	return new Promise(async (resolve, reject) => {
 		try {
-			const posts = await Post.find({ "author.authorId": id });
+			const user = await User.findOne({ _id: id });
+			const userpic = await user.profilePic;
+			const posts = await Post.find({ "author.authorId": id }).lean();
+			posts.map((post) => {
+				post.author.authorPic = userpic;
+			});
 			return resolve(posts);
 		} catch {
 			return reject("could not connect to db");
@@ -104,8 +109,24 @@ const fetchPostsRelated = (id) => {
 		try {
 			const posts = await Post.find({
 				"author.authorId": { $in: Following },
-			}).sort({ createdOn: -1 });
-			return resolve(posts);
+			})
+				.sort({ createdOn: -1 })
+				.lean();
+			// await Promise for array.map;
+			await Promise.all(
+				posts.map(async (post) => {
+					try {
+						const user = await User.findOne({
+							_id: post.author.authorId,
+						});
+						post.author.authorPic = await user.profilePic;
+						console.log(post.author);
+						console.log(user.profilePic);
+					} catch (e) {
+						console.log(e);
+					}
+				})
+			).then(() => resolve(posts)); //<-----Promise resolved here
 		} catch (e) {
 			return reject("could not connect to database");
 		}
