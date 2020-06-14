@@ -112,6 +112,8 @@ const fetchPostsRelated = (id) => {
 			})
 				.sort({ createdOn: -1 })
 				.lean();
+			// lean to convert mongoose object to mutable object in js
+			// inserting profile pic to posts
 			// await Promise for array.map;
 			await Promise.all(
 				posts.map(async (post) => {
@@ -120,13 +122,13 @@ const fetchPostsRelated = (id) => {
 							_id: post.author.authorId,
 						});
 						post.author.authorPic = await user.profilePic;
-						console.log(post.author);
-						console.log(user.profilePic);
 					} catch (e) {
-						console.log(e);
+						return reject(e);
 					}
 				})
-			).then(() => resolve(posts)); //<-----Promise resolved here
+			)
+				.then(() => resolve(posts))
+				.catch((e) => reject(e)); //<-----Promise resolved here
 		} catch (e) {
 			return reject("could not connect to database");
 		}
@@ -139,19 +141,12 @@ const pushAPost = (id, name, body) => {
 		// form data in body
 		const { error } = postValidator(body);
 		if (error) return reject(error.details[0].message);
-		try {
-			const user = await User.findOne({ _id: id });
-			var pic = user.profilePic;
-		} catch (e) {
-			return reject(e);
-		}
 		const post = new Post({
 			title: body.title,
 			content: body.content,
 			author: {
 				authorName: name,
 				authorId: id,
-				authorPic: pic,
 			},
 		});
 		// inserting into database
@@ -166,6 +161,7 @@ const pushAPost = (id, name, body) => {
 	});
 };
 // fetch a post by it's id arguments->postid
+// DEPRECATED
 const fetchAPost = (id) => {
 	return new Promise(async (resolve, reject) => {
 		try {
