@@ -1,4 +1,4 @@
-# SpaceX-Fleo
+# User Management
 
 This project was built with NodeJs, ExpressJs and Mongoose.
 This api is built to manage login sessions, user registrations and photo uploads.
