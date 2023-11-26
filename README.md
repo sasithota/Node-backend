@@ -1,6 +1,6 @@
 # NodeAuthApp
 
-🚀🚀🚀 NodeAuthApp is a personal Node.js application built with Express.js, designed to streamline user authentication, session management, and photo uploads using AWS S3. 🚀🚀🚀 
+🚀🚀🚀 NodeAuthApp is a Node.js application built with Express.js, designed to streamline user authentication, session management, and photo uploads using AWS S3. 🚀🚀🚀 
 
 ## Features
 
